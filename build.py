@@ -215,7 +215,12 @@ SEARCH_FORM = """<form id="search" role="search">
   <input name="q" type="search" placeholder="Try: 1950s kitchen, rocket launch, steam train" value="{value}" required>
   <select name="kind" aria-label="Media type"><option value="any">Video + photo</option><option value="video">Video</option><option value="photo">Photo</option></select>
   <button type="submit">Search</button>
-</form>"""
+</form>
+<ol class="how">
+  <li><b>Search once.</b> We look through NASA, Wikimedia Commons, Internet Archive and Openverse at the same time.</li>
+  <li><b>See what you're allowed to do.</b> Each clip is marked: OK for monetized videos, credit required, or check license.</li>
+  <li><b>Download and copy credits.</b> Clips that need attribution go into your credits list. Paste it into your video description.</li>
+</ol>"""
 
 FILTER_BAR = """<div class="bar">
   <span id="count">{count}</span>

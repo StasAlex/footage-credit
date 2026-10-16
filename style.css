@@ -82,3 +82,11 @@ header.top {
 .related { padding: 8px 0 40px; & h2 { font-size: 16px; } & a { display: inline-block; margin: 0 10px 6px 0; font-size: 14px; } }
 
 footer { border-top: 1px solid var(--line); padding: 20px 0 90px; color: var(--muted); font-size: 13px; & a { margin-right: 14px; } }
+
+.how {
+  list-style: none; counter-reset: how; margin: 16px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;
+  & li { counter-increment: how; position: relative; padding: 10px 12px 10px 42px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); font-size: 13px; color: var(--muted); }
+  & li::before { content: counter(how); position: absolute; left: 12px; top: 10px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  & b { color: var(--ink); }
+}
