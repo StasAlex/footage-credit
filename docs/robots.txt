@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://stasalex.github.io/footage-credit/sitemap.xml

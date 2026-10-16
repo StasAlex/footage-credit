@@ -1,0 +1,41 @@
+# One topic per line. Each becomes docs/free/<slug>/. Archival and space topics are where these sources are strongest.
+rocket launch
+moon landing
+earth from space
+astronaut
+mars
+hubble
+northern lights
+volcano
+ocean waves
+storm clouds
+waterfall
+desert
+forest
+steam train
+vintage car
+old new york
+1950s
+1960s
+newsreel
+great depression
+dust bowl
+world war 2
+factory workers
+vintage kitchen
+typewriter
+old hollywood
+cash register
+money
+gold
+farm
+highway
+airplane
+ship
+fireworks
+crowd
+city traffic
+bees
+wildlife
+satellite
+1920s
