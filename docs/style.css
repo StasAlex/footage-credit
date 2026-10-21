@@ -50,6 +50,7 @@ header.top {
   & h3 { margin: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   & .by, & .lic { margin: 0; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   & .badges { display: flex; gap: 4px; flex-wrap: wrap; margin: 2px 0 6px; }
+  & .report { align-self: flex-start; font-size: 11px; color: var(--muted); }
   & .act { display: flex; gap: 6px; margin-top: auto; }
   & .act button { flex: 1; font: inherit; font-size: 13px; padding: 7px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
   & .act .dl { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }

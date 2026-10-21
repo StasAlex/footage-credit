@@ -22,6 +22,7 @@ from pathlib import Path
 SITE_NAME = "FootageCredit"
 BASE_URL = "https://stasalex.github.io/footage-credit"   # change when a custom domain is attached
 PROXY_URL = ""                                            # deployed worker/ URL; enables Pixabay in live search
+REPO_URL = "https://github.com/StasAlex/footage-credit"    # reports and takedown requests go to its issues
 ADSENSE_CLIENT = ""                                       # "ca-pub-XXXXXXXX" once AdSense approves the site
 
 ROOT = Path(__file__).parent
@@ -29,6 +30,14 @@ OUT, CACHE = ROOT / "docs", ROOT / "cache"
 UA = "FootageCreditBuilder/0.1 (static site generator)"
 q = urllib.parse.quote
 esc = lambda s: html.escape(str(s or ""), quote=True)
+BLOCKED = {l.strip() for l in (ROOT / "blocklist.txt").read_text().splitlines() if l.strip() and not l.startswith("#")} \
+    if (ROOT / "blocklist.txt").exists() else set()
+
+
+def report_url(it):
+    body = (f"Source page: {it['page']}\nTitle: {it['title']}\n\n"
+            "Why should this result be removed? (for copyright claims: who owns the work, and a link to proof)\n")
+    return f"{REPO_URL}/issues/new?labels=report&title={q('Report: ' + it['page'])}&body={q(body)}"
 
 
 def get_json(url):
@@ -164,6 +173,7 @@ def card(it, i):
     <p class="by">{esc(it['author'] or 'Unknown author')} · {esc(it['src'])}</p>
     <p class="lic">{esc(it['license'] or 'Check license')}</p>
     <div class="badges">{badge}</div>
+    <a class="report" href="{esc(report_url(it))}" target="_blank" rel="noopener nofollow">Report</a>
     <div class="act"><button class="dl" type="button">Download</button><button class="add" type="button">+ Credits</button></div>
   </div>
 </article>"""
@@ -174,7 +184,8 @@ def card(it, i):
 def page(title, desc, body, rel, path, extra_head=""):
     ads = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}" '
            'crossorigin="anonymous"></script>') if ADSENSE_CLIENT else ""
-    proxy = f'<script>window.FC_PROXY = {json.dumps(PROXY_URL)};</script>' if PROXY_URL else ""
+    proxy = (f'<script>window.FC_PROXY = {json.dumps(PROXY_URL)}; window.FC_REPO = {json.dumps(REPO_URL)}; '
+             f'window.FC_BLOCK = {json.dumps(sorted(BLOCKED))};</script>')
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -195,8 +206,8 @@ def page(title, desc, body, rel, path, extra_head=""):
 </div></header>
 {body}
 <footer><div class="wrap">
-  <a href="{rel}about/">About</a><a href="{rel}privacy/">Privacy</a>
-  <span>Results come from Wikimedia Commons, NASA, Internet Archive and Openverse. Always check the license on the source page.</span>
+  <a href="{rel}about/">About</a><a href="{rel}terms/">Terms</a><a href="{rel}privacy/">Privacy</a><a href="{rel}report/">Report content</a>
+  <span>We host no files. License badges are automatic: check the license on the source page before you publish.</span>
 </div></footer>
 <aside id="credits">
   <div class="panel">
@@ -254,7 +265,7 @@ def main():
 
     # topic pages
     for kw in keywords:
-        res, s = data[kw], slug(kw)
+        res, s = [it for it in data[kw] if it["page"] not in BLOCKED], slug(kw)
         others = [k for k in keywords if k != kw]
         start = keywords.index(kw)
         related = (others[start:] + others[:start])[:12]
@@ -311,6 +322,23 @@ def main():
 
 
 STATIC_PAGES = [
+    ("terms", "Terms of use", """
+<p>FootageCredit is a search tool. It does not host, sell or license any files. Results, thumbnails and downloads come directly from third-party archives (Wikimedia Commons, NASA Image and Video Library, Internet Archive, Openverse, Pixabay), and each archive's own terms apply.</p>
+<h2>License badges are not legal advice</h2>
+<p>Badges such as "commercial OK" or "no credit needed" are generated automatically from the license text the archive reports. Archives are often edited by volunteers, and that information can be wrong, incomplete or out of date. A file may also have been uploaded by someone who did not own it.</p>
+<p>You are solely responsible for checking the license on the source page and for how you use any file you find here, including in monetized videos. Some uses need extra permission even when the license allows reuse, for example recognizable people, trademarks, logos or artwork shown in the footage.</p>
+<h2>No warranty</h2>
+<p>The site and the generated credits are provided "as is", without warranty of any kind. To the fullest extent permitted by law, FootageCredit is not liable for any claim, loss or damage arising from your use of the site or of any file found through it.</p>
+<h2>Removal requests</h2>
+<p>If a result infringes your rights, see <a href="../report/">Report content</a>. We remove reported results from our pages.</p>
+<p>We may change these terms at any time. Continued use of the site means you accept the current version.</p>"""),
+    ("report", "Report content", f"""
+<p>Every result on FootageCredit links to a file hosted by a third-party archive. We can remove a result from our pages, but the file itself stays on the archive until the archive removes it.</p>
+<h2>How to report</h2>
+<p>Use the <b>Report</b> link under any result, or <a href="{REPO_URL}/issues/new?labels=report&title=Report" rel="nofollow">open a report</a> directly. Include the source page link and why it should be removed. For copyright claims, say who owns the work and link to proof of ownership.</p>
+<p>We review reports and remove valid ones from search results and topic pages, usually within a few days.</p>
+<h2>Removing the file at the source</h2>
+<p>To take the file down everywhere, also contact the archive that hosts it: <a href="https://commons.wikimedia.org/wiki/Commons:Contact_us" rel="nofollow">Wikimedia Commons</a>, <a href="https://help.archive.org/help/how-do-i-request-to-remove-something-from-archive-org/" rel="nofollow">Internet Archive</a>, <a href="https://pixabay.com/service/contact/" rel="nofollow">Pixabay</a>, <a href="https://docs.openverse.org/" rel="nofollow">Openverse</a> (removes it from its index; the original host keeps the file).</p>"""),
     ("about", "About", """
 <p>FootageCredit searches open archives (Wikimedia Commons, NASA Image and Video Library, Internet Archive and Openverse) and shows the results side by side with plain-language license badges.</p>
 <p>Clips that need attribution are added to your credits list when you download them. Copy the block into your video description and you're covered.</p>

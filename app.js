@@ -122,6 +122,7 @@ function card(it, i) {
     : `<span class="b ${L.commercial ? "ok" : "warn"}">${L.commercial ? "commercial OK" : "non-commercial"}</span>`
       + (L.attribution ? `<span class="b">credit required</span>` : `<span class="b ok">no credit needed</span>`);
   const added = credits.some((c) => c.page === it.page);
+  const report = `${window.FC_REPO}/issues/new?labels=report&title=${enc("Report: " + it.page)}&body=${enc(`Source page: ${it.page}\nTitle: ${it.title}\n\nWhy should this result be removed? (for copyright claims: who owns the work, and a link to proof)\n`)}`;
   return `<article class="card" data-i="${i}">
   <a class="thumb" href="${esc(it.page)}" target="_blank" rel="noopener nofollow">
     <img loading="lazy" src="${esc(it.thumb)}" alt="${esc(it.title)}">${it.kind === "video" ? '<span class="kind">▶ video</span>' : ""}
@@ -131,6 +132,7 @@ function card(it, i) {
     <p class="by">${esc(it.author || "Unknown author")} · ${esc(it.src)}</p>
     <p class="lic">${esc(L.label)}</p>
     <div class="badges">${badge}</div>
+    <a class="report" href="${esc(report)}" target="_blank" rel="noopener nofollow">Report</a>
     <div class="act">
       <button class="dl" type="button">Download</button>
       <button class="add${added ? " on" : ""}" type="button">${added ? "✓ In credits" : "+ Credits"}</button>
@@ -180,7 +182,8 @@ async function search(q, kind) {
   // Interleave sources so one archive does not dominate the first screen.
   results = [];
   for (let i = 0; parts.some((p) => p[i]); i++) parts.forEach((p) => p[i] && results.push(p[i]));
-  results = results.filter((it) => it.thumb);
+  const blocked = new Set(window.FC_BLOCK || []);
+  results = results.filter((it) => it.thumb && !blocked.has(it.page));
   render();
   if (errs.length) $("#count").textContent += ` · unavailable: ${errs.join(", ")}`;
 }
