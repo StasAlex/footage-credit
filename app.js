@@ -135,7 +135,7 @@ function card(it, i) {
     <a class="report" href="${esc(report)}" target="_blank" rel="noopener nofollow">Report</a>
     <div class="act">
       <button class="dl" type="button">Download</button>
-      <button class="add${added ? " on" : ""}" type="button">${added ? "✓ In credits" : "+ Credits"}</button>
+      <button class="add${added ? " on" : ""}" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description.">${added ? "✓ In credit list" : "+ Credit line"}</button>
     </div>
   </div>
 </article>`;
@@ -170,6 +170,15 @@ function renderCredits() {
   $("#credits-text").value = creditsText();
   $("#credits-list").innerHTML = credits.map((c, i) =>
     `<li><span>${esc(c.title || "Untitled")}</span><button type="button" data-rm="${i}" aria-label="Remove">✕</button></li>`).join("");
+}
+
+// Short notice above the credit list button.
+let toastTimer;
+function toast(text) {
+  const t = $("#toast");
+  t.textContent = text; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (t.hidden = true), 4000);
 }
 
 // ---------- search ----------
@@ -219,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const at = credits.findIndex((c) => c.page === it.page);
       at >= 0 ? credits.splice(at, 1) : credits.push(it);
       store.set(credits); renderCredits(); render();
+      if (at < 0) toast("Credit line added. Open the credit list to copy it into your video description.");
     }
     if (e.target.closest(".dl")) {
       const btn = e.target.closest(".dl");
@@ -228,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.textContent = "Download";
       if (lic(it.license).attribution && !credits.some((c) => c.page === it.page)) {
         credits.push(it); store.set(credits); renderCredits(); render();
+        toast("This clip needs the author named, so its credit line was added to your list.");
       }
     }
   });

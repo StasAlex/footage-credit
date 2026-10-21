@@ -174,7 +174,7 @@ def card(it, i):
     <p class="lic">{esc(it['license'] or 'Check license')}</p>
     <div class="badges">{badge}</div>
     <a class="report" href="{esc(report_url(it))}" target="_blank" rel="noopener nofollow">Report</a>
-    <div class="act"><button class="dl" type="button">Download</button><button class="add" type="button">+ Credits</button></div>
+    <div class="act"><button class="dl" type="button">Download</button><button class="add" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description.">+ Credit line</button></div>
   </div>
 </article>"""
 
@@ -211,13 +211,17 @@ def page(title, desc, body, rel, path, extra_head=""):
 </div></footer>
 <aside id="credits">
   <div class="panel">
-    <h2>Your credits</h2>
-    <p>Clips you download that need attribution land here automatically. Paste the block into your video description.</p>
+    <h2>Your credit list</h2>
+    <p>Many free clips may only be used if you name the author. This list writes that text for you: copy it and paste it into your YouTube video description.</p>
+    <p>Clips that need a credit are added when you click <b>Download</b>. Use <b>+ Credit line</b> to add any other clip by hand.</p>
     <ul id="credits-list"></ul>
-    <textarea id="credits-text" readonly placeholder="Add clips with “+ Credits”"></textarea>
+    <textarea id="credits-text" readonly placeholder="Example:
+Footage credits:
+• &quot;Ocean waves&quot; by Jane Doe (Wikimedia Commons), CC BY 4.0. https://…"></textarea>
     <div class="row"><button id="copy" type="button">Copy</button><button id="clear" type="button">Clear</button></div>
   </div>
-  <button id="credits-toggle" type="button">Credits (<span id="credits-n">0</span>)</button>
+  <p id="toast" role="status" hidden></p>
+  <button id="credits-toggle" type="button">Credit list (<span id="credits-n">0</span>)</button>
 </aside>
 {proxy}<script src="{rel}app.js"></script>
 </body>
@@ -233,7 +237,7 @@ SEARCH_FORM = """<form id="search" role="search">
 <ol class="how">
   <li><b>Search once.</b> We look through NASA, Wikimedia Commons, Internet Archive and Openverse at the same time.</li>
   <li><b>See what you're allowed to do.</b> Each clip is marked: OK for monetized videos, credit required, or check license.</li>
-  <li><b>Download and copy credits.</b> Clips that need attribution go into your credits list. Paste it into your video description.</li>
+  <li><b>Download and copy the credits.</b> If a clip needs the author named, its credit line is added to your list (bottom right). Copy the list into your video description.</li>
 </ol>"""
 
 FILTER_BAR = """<div class="bar">
