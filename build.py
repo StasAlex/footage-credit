@@ -31,6 +31,9 @@ ROOT = Path(__file__).parent
 OUT, CACHE = ROOT / "docs", ROOT / "cache"
 UA = "FootageCreditBuilder/0.2 (+https://github.com/StasAlex/footage-credit)"
 q = urllib.parse.quote
+# Cache-busting version for style.css and app.js, so browsers never mix new HTML with old assets.
+import hashlib
+ASSET_V = hashlib.md5((Path(__file__).parent / "style.css").read_bytes() + (Path(__file__).parent / "app.js").read_bytes()).hexdigest()[:8]
 esc = lambda s: html.escape(str(s or ""), quote=True)
 BLOCKED = {l.strip() for l in (ROOT / "blocklist.txt").read_text().splitlines() if l.strip() and not l.startswith("#")} \
     if (ROOT / "blocklist.txt").exists() else set()
@@ -227,7 +230,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 <meta property="og:description" content="{esc(desc)}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="{rel}style.css">
+<link rel="stylesheet" href="{rel}style.css?v={ASSET_V}">
 {ads}{extra_head}
 </head>
 <body>
@@ -254,14 +257,14 @@ Footage credits:
   <p id="toast" role="status" hidden></p>
   <button id="credits-toggle" type="button">Credit list (<span id="credits-n">0</span>)</button>
 </aside>
-{proxy}<script src="{rel}app.js"></script>
+{proxy}<script src="{rel}app.js?v={ASSET_V}"></script>
 </body>
 </html>
 """
 
 
 SEARCH_FORM = """<form id="search" role="search">
-  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
   <input name="q" type="search" placeholder="Search archival footage: newsreel, 1950s kitchen, apollo 11…" value="{value}" aria-label="Search footage" required>
   <select name="kind" aria-label="Media type"><option value="any">All media</option><option value="video">Video</option><option value="photo">Photo</option></select>
   <button type="submit">Search</button>
