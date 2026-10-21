@@ -9,7 +9,8 @@ const enc = encodeURIComponent;
 function lic(raw) {
   const s = (raw || "").toLowerCase();
   let code = "unknown";
-  if (/pixabay/.test(s)) code = "free";
+  if (/unverified/.test(s)) code = "unknown";
+  else if (/pixabay/.test(s)) code = "free";
   else if (/cc0|zero/.test(s)) code = "cc0";
   else if (/public.?domain|pdm|\bpd\b|no known copyright/.test(s)) code = "pd";
   else if (/nc/.test(s)) code = "nc";
@@ -24,6 +25,8 @@ function lic(raw) {
 const strip = (h) => { const d = document.createElement("div"); d.innerHTML = h || ""; return d.textContent.trim(); };
 
 // ---------- sources ----------
+// Internet Archive: only items marked public domain (Prelinger and PD/CC0 licence URLs). Mirror of build.py.
+const ARCHIVE_PD = ' AND (collection:prelinger OR licenseurl:"http://creativecommons.org/licenses/publicdomain/" OR licenseurl:"http://creativecommons.org/publicdomain/mark/1.0/" OR licenseurl:"http://creativecommons.org/publicdomain/zero/1.0/")';
 const SOURCES = {
   async pixabay(q, kind) {
     if (!window.FC_PROXY) return [];
@@ -69,22 +72,24 @@ const SOURCES = {
   },
   async archive(q, kind) {
     if (kind === "photo") return [];
-    const d = await (await fetch("https://archive.org/advancedsearch.php?q=" + enc(`(${q}) AND mediatype:movies`)
-      + "&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=licenseurl&rows=24&output=json")).json();
+    const ask = async (expr) => (await fetch("https://archive.org/advancedsearch.php?q=" + enc(`${expr} AND mediatype:movies` + ARCHIVE_PD)
+      + "&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=licenseurl&fl[]=collection&rows=24&sort[]=downloads+desc&output=json")).json();
+    // Title/subject matches are far more relevant; fall back to full text when they are too few.
+    let d = await ask(`(title:(${q}) OR subject:(${q}))`);
+    if ((d.response?.docs || []).length < 5) d = await ask(`(${q})`);
     return (d.response?.docs || []).map((h) => ({
       src: "Internet Archive", kind: "video", title: `${h.title || ""}${h.year ? ` (${h.year})` : ""}`,
       author: [].concat(h.creator || "").join(", "),
-      license: h.licenseurl ? licFromUrl(h.licenseurl) : "", page: `https://archive.org/details/${h.identifier}`,
+      license: archiveLic(h), page: `https://archive.org/details/${h.identifier}`,
       thumb: `https://archive.org/services/img/${h.identifier}`, file: "archive:" + h.identifier,
     }));
   },
 };
 
-function licFromUrl(u) {
-  if (/publicdomain\/zero/.test(u)) return "CC0";
-  if (/publicdomain/.test(u)) return "Public Domain";
-  const m = u.match(/licenses\/([a-z-]+)\/([\d.]+)/);
-  return m ? `CC ${m[1].toUpperCase()} ${m[2]}` : u;
+// Only Prelinger items are trusted as public domain; elsewhere the PD mark is the uploader's own claim.
+function archiveLic(h) {
+  if ([].concat(h.collection || []).includes("prelinger")) return "Public Domain (Prelinger Archives)";
+  return h.licenseurl ? "Unverified: uploader marked it public domain" : "";
 }
 
 // Resolve the real file URL for sources that only give an index.

@@ -62,6 +62,13 @@ The site hosts no files; downloads go straight to the archive. Always tell users
 - Don't invent license facts; if a source doesn't state a license, show "check license".
 - AdSense needs a privacy page (exists) and, in practice, a custom domain; a `github.io` subdomain usually isn't accepted.
 
+## Positioning (2026-10-21)
+Niche: public-domain and archival footage (newsreels, Prelinger educational/industrial films, home movies,
+NASA missions, historic photos), where Pexels/Pixabay are weak. Internet Archive search is limited to items
+marked public domain (`ARCHIVE_PD`, mirrored in `app.js`), sorted by downloads. `keywords.txt` holds ~570 topics;
+topics with fewer than `MIN_RESULTS` results are not published (thin pages hurt the whole site in search).
+Planned domain: footagecredit.com (not bought yet).
+
 ## Status (2026-10-16)
 - MVP built: home with live search, 40 topic pages, topics index, about, privacy, sitemap.
 - Not yet: GitHub repo + Pages, custom domain, AdSense application, Google Search Console, affiliate block, more keywords.

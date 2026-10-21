@@ -15,6 +15,7 @@ import shutil
 import sys
 import time
 import urllib.parse
+import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -22,12 +23,13 @@ from pathlib import Path
 SITE_NAME = "FootageCredit"
 BASE_URL = "https://stasalex.github.io/footage-credit"   # change when a custom domain is attached
 PROXY_URL = ""                                            # deployed worker/ URL; enables Pixabay in live search
+MIN_RESULTS = 10                                          # topic pages with fewer results are not published
 REPO_URL = "https://github.com/StasAlex/footage-credit"    # reports and takedown requests go to its issues
 ADSENSE_CLIENT = ""                                       # "ca-pub-XXXXXXXX" once AdSense approves the site
 
 ROOT = Path(__file__).parent
 OUT, CACHE = ROOT / "docs", ROOT / "cache"
-UA = "FootageCreditBuilder/0.1 (static site generator)"
+UA = "FootageCreditBuilder/0.2 (+https://github.com/StasAlex/footage-credit)"
 q = urllib.parse.quote
 esc = lambda s: html.escape(str(s or ""), quote=True)
 BLOCKED = {l.strip() for l in (ROOT / "blocklist.txt").read_text().splitlines() if l.strip() and not l.startswith("#")} \
@@ -40,10 +42,17 @@ def report_url(it):
     return f"{REPO_URL}/issues/new?labels=report&title={q('Report: ' + it['page'])}&body={q(body)}"
 
 
-def get_json(url):
+def get_json(url, timeout=40):
+    """GET JSON, backing off and retrying when the archive rate-limits us (HTTP 429)."""
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=40) as r:
-        return json.load(r)
+    for wait in (5, 15, 45, None):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or wait is None:
+                raise
+            time.sleep(wait)
 
 
 def strip_tags(s):
@@ -56,8 +65,17 @@ def slug(s):
 
 # ---------- sources (mirror of app.js) ----------
 
+OPENVERSE_FAILS = [0]
+
+
 def openverse(kw):
-    d = get_json(f"https://api.openverse.org/v1/images/?q={q(kw)}&page_size=12&mature=false")
+    if OPENVERSE_FAILS[0] >= 3:                # Openverse often stalls for anonymous clients; stop asking after 3 failures
+        return []
+    try:
+        d = get_json(f"https://api.openverse.org/v1/images/?q={q(kw)}&page_size=12&mature=false", timeout=10)
+    except Exception:
+        OPENVERSE_FAILS[0] += 1
+        raise
     out = []
     for h in d.get("results", []):
         lic = f"CC {h.get('license', '').upper()} {h.get('license_version', '')}".replace("CC CC0", "CC0").replace(
@@ -99,25 +117,33 @@ def nasa(kw):
     return out
 
 
-def lic_from_url(u):
-    if "publicdomain/zero" in u:
-        return "CC0"
-    if "publicdomain" in u:
-        return "Public Domain"
-    m = re.search(r"licenses/([a-z-]+)/([\d.]+)", u)
-    return f"CC {m[1].upper()} {m[2]}" if m else u
+# Internet Archive: only items marked public domain (Prelinger and PD/CC0 licence URLs), most downloaded first.
+ARCHIVE_PD = ' AND (collection:prelinger OR licenseurl:"http://creativecommons.org/licenses/publicdomain/" OR licenseurl:"http://creativecommons.org/publicdomain/mark/1.0/" OR licenseurl:"http://creativecommons.org/publicdomain/zero/1.0/")'
+
+
+def archive_lic(h):
+    """Only Prelinger items are trusted as public domain; elsewhere the PD mark is the uploader's own claim."""
+    if "prelinger" in (h.get("collection") or []):
+        return "Public Domain (Prelinger Archives)"
+    return "Unverified: uploader marked it public domain" if h.get("licenseurl") else ""
 
 
 def archive(kw):
-    d = get_json("https://archive.org/advancedsearch.php?q=" + q(f"({kw}) AND mediatype:movies")
-                 + "&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=licenseurl&rows=10&output=json")
+    def ask(expr):
+        return get_json("https://archive.org/advancedsearch.php?q=" + q(f"{expr} AND mediatype:movies" + ARCHIVE_PD)
+                        + "&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&fl[]=licenseurl&fl[]=collection"
+                        + "&rows=12&sort[]=downloads+desc&output=json")
+    # Title/subject matches are far more relevant; fall back to full text when they are too few.
+    d = ask(f"(title:({kw}) OR subject:({kw}))")
+    if len(d.get("response", {}).get("docs", [])) < 5:
+        d = ask(f"({kw})")
     out = []
     for h in d.get("response", {}).get("docs", []):
         ident, cr = h["identifier"], h.get("creator", "")
         out.append(dict(src="Internet Archive", kind="video",
                         title=f"{h.get('title', '')} ({h['year']})" if h.get("year") else h.get("title", ""),
                         author=", ".join(cr) if isinstance(cr, list) else cr,
-                        license=lic_from_url(h["licenseurl"]) if h.get("licenseurl") else "",
+                        license=archive_lic(h),
                         page=f"https://archive.org/details/{ident}", thumb=f"https://archive.org/services/img/{ident}",
                         file="archive:" + ident))
     return out
@@ -127,19 +153,21 @@ def fetch(kw):
     cf = CACHE / f"{slug(kw)}.json"
     if cf.exists() and ("--no-fetch" in sys.argv or time.time() - cf.stat().st_mtime < 86400):
         return json.loads(cf.read_text())
-    parts = []
+    parts, failed = [], False
     for fn in (commons, nasa, archive, openverse):
         try:
             parts.append(fn(kw))
         except Exception as e:
             print(f"  {kw}: {fn.__name__} failed: {e}")
+            failed |= fn is not openverse
             parts.append([])
     res = []                                   # interleave sources
     for i in range(max(map(len, parts), default=0)):
         res += [p[i] for p in parts if i < len(p) and p[i].get("thumb")]
     res = res[:24]
-    CACHE.mkdir(exist_ok=True)
-    cf.write_text(json.dumps(res, ensure_ascii=False))
+    if not failed:                             # don't cache incomplete results, retry them next build
+        CACHE.mkdir(exist_ok=True)
+        cf.write_text(json.dumps(res, ensure_ascii=False))
     return res
 
 
@@ -148,7 +176,8 @@ def fetch(kw):
 def lic(raw):
     s = (raw or "").lower()
     code = "unknown"
-    if "pixabay" in s: code = "free"
+    if "unverified" in s: code = "unknown"
+    elif "pixabay" in s: code = "free"
     elif re.search(r"cc0|zero", s): code = "cc0"
     elif re.search(r"public.?domain|pdm|\bpd\b|no known copyright", s): code = "pd"
     elif "nc" in s: code = "nc"
@@ -230,12 +259,12 @@ Footage credits:
 
 
 SEARCH_FORM = """<form id="search" role="search">
-  <input name="q" type="search" placeholder="Try: 1950s kitchen, rocket launch, steam train" value="{value}" required>
+  <input name="q" type="search" placeholder="Try: 1950s kitchen, newsreel, apollo 11, steam train" value="{value}" required>
   <select name="kind" aria-label="Media type"><option value="any">Video + photo</option><option value="video">Video</option><option value="photo">Photo</option></select>
   <button type="submit">Search</button>
 </form>
 <ol class="how">
-  <li><b>Search once.</b> We look through NASA, Wikimedia Commons, Internet Archive and Openverse at the same time.</li>
+  <li><b>Search once.</b> We look through the Internet Archive, NASA, Wikimedia Commons and Openverse at the same time.</li>
   <li><b>See what you're allowed to do.</b> Each clip is marked: OK for monetized videos, credit required, or check license.</li>
   <li><b>Download and copy the credits.</b> If a clip needs the author named, its credit line is added to your list (bottom right). Copy the list into your video description.</li>
 </ol>"""
@@ -264,8 +293,11 @@ def main():
     for f in ("app.js", "style.css"):
         shutil.copy(ROOT / f, OUT / f)
 
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(3) as ex:
         data = dict(zip(keywords, ex.map(fetch, keywords)))
+
+    # Thin pages hurt the whole site in search, so topics with few results are skipped.
+    keywords = [k for k in keywords if len([it for it in data[k] if it["page"] not in BLOCKED]) >= MIN_RESULTS]
 
     # topic pages
     for kw in keywords:
@@ -277,8 +309,8 @@ def main():
         n_free = sum(1 for it in res if lic(it["license"])[1])
         body = f"""<main class="wrap">
 <section class="hero">
-  <h1>Free {esc(kw)} footage and photos</h1>
-  <p>{len(res)} public-domain and Creative Commons results for “{esc(kw)}” from open archives, {n_free} of them cleared for monetized videos. Download a clip and its credit line is written for you.</p>
+  <h1>Public domain {esc(kw)} footage and photos</h1>
+  <p>{len(res)} archival and public-domain results for “{esc(kw)}” from the Internet Archive, NASA, Wikimedia Commons and Openverse, {n_free} of them cleared for monetized videos. Download a clip and its credit line is written for you.</p>
   {SEARCH_FORM.format(value=esc(kw))}
 </section>
 {AD_SLOT}
@@ -287,8 +319,8 @@ def main():
 <section class="related"><h2>Related topics</h2>{rel_links}</section>
 </main>"""
         seed = f'<script type="application/json" id="seed">{json.dumps(res, ensure_ascii=False).replace("</", "<\\/")}</script>'
-        write(f"free/{s}", page(f"Free {kw} stock footage & photos (public domain, CC) | {SITE_NAME}",
-                                f"Free {kw} videos and photos from NASA, Wikimedia, Internet Archive and Openverse, with license badges and auto-generated credits for YouTube.",
+        write(f"free/{s}", page(f"{kw.capitalize()} footage, public domain & free | {SITE_NAME}",
+                                f"Public domain and archival {kw} footage and photos from the Internet Archive, NASA and Wikimedia Commons. License badges and ready-to-paste YouTube credits.",
                                 body, "../../", f"free/{s}/", seed))
 
     # topics index
@@ -301,8 +333,8 @@ def main():
     popular = "".join(f'<a href="free/{slug(k)}/">{esc(k)}</a>' for k in keywords[:24])
     home = f"""<main class="wrap">
 <section class="hero">
-  <h1>Free footage for YouTube, with the credits written for you</h1>
-  <p>Search public-domain and Creative Commons video and photos from NASA, Wikimedia Commons, Internet Archive and Openverse in one place. Every result shows whether you can use it in a monetized video, and the credit block for your description builds itself as you download.</p>
+  <h1>Public domain archival footage for your videos</h1>
+  <p>Old newsreels, educational and industrial films, home movies, NASA missions and historic photos from the Internet Archive, NASA, Wikimedia Commons and Openverse, in one search. Every result shows whether you can use it in a monetized video, and the credit block for your description writes itself as you download.</p>
   {SEARCH_FORM.format(value="")}
 </section>
 {AD_SLOT}
@@ -310,8 +342,8 @@ def main():
 <div id="grid"></div>
 <section class="related"><h2>Popular topics</h2>{popular}</section>
 </main>"""
-    write("", page(f"{SITE_NAME}: free public-domain footage with auto credits",
-                   "Search free public-domain and Creative Commons footage across NASA, Wikimedia, Internet Archive and Openverse. License badges and ready-to-paste YouTube credits.",
+    write("", page(f"{SITE_NAME}: public domain archival footage with auto credits",
+                   "Search public domain archival footage, newsreels, vintage films and NASA video in one place. License badges and ready-to-paste YouTube credits.",
                    home, "", ""))
 
     for name, title, text in STATIC_PAGES:

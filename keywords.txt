@@ -1,4 +1,4 @@
-# One topic per line. Each becomes docs/free/<slug>/. Archival and space topics are where these sources are strongest.
+# One topic per line. Each becomes docs/free/<slug>/. Focus: public-domain and archival footage, where these sources beat the big stock sites.
 rocket launch
 moon landing
 earth from space
@@ -39,3 +39,532 @@ bees
 wildlife
 satellite
 1920s
+prohibition
+world war 1
+d-day
+pearl harbor
+atomic bomb test
+nuclear explosion
+cold war
+civil defense
+duck and cover
+space race
+apollo 11
+apollo program
+sputnik
+gemini program
+mercury program
+space shuttle launch
+saturn v
+1939 world's fair
+1964 world's fair
+hindenburg
+titanic
+wright brothers
+early aviation
+zeppelin
+model t
+ford assembly line
+coney island
+times square
+route 66
+hoover dam
+golden gate bridge
+empire state building
+ellis island
+immigrants
+stock market crash
+bread line
+soup kitchen
+new deal
+wpa workers
+civilian conservation corps
+rosie the riveter
+victory garden
+war bonds
+ration
+propaganda film
+silent film
+silent comedy
+charlie chaplin
+buster keaton
+old cartoons
+public domain cartoons
+betty boop
+popeye
+superman cartoon
+felix the cat
+vintage commercials
+old tv commercials
+educational film
+social guidance film
+safety film
+driver's education film
+hygiene film
+prelinger archives
+industrial film
+home movies
+vintage home movies
+8mm film
+film grain
+film leader countdown
+old film projector
+drive-in theater
+jukebox
+soda fountain
+diner
+milkman
+telephone operator
+switchboard
+typewriter office
+vintage computer
+mainframe computer
+punch cards
+vacuum tubes
+old radio
+radio broadcast
+early television
+test pattern
+classic car
+hot rod
+steam locomotive
+railroad
+trolley
+streetcar
+subway
+old chicago
+old los angeles
+old san francisco
+old london
+old paris
+old berlin
+old tokyo
+old havana
+vintage las vegas
+vintage hollywood
+hollywood premiere
+movie stars
+vaudeville
+circus
+carnival
+county fair
+parade
+ticker tape parade
+protest
+civil rights march
+march on washington
+suffragettes
+election
+presidential speech
+fdr
+eisenhower
+jfk
+nixon
+moon landing speech
+soldiers marching
+tanks
+fighter planes
+bombers
+battleship
+aircraft carrier
+submarine
+navy
+army training
+paratroopers
+ww2 london blitz
+ww2 pacific
+ww1 trenches
+biplane
+airship
+seaplane
+pan am
+airport 1950s
+stewardess
+ocean liner
+harbor
+shipyard
+fishing boats
+whaling
+lighthouse
+steel mill
+coal mining
+coal miners
+oil well
+oil rig
+gold mining
+lumberjacks
+logging
+cotton field
+wheat harvest
+tractor
+horse and buggy
+cowboys
+rodeo
+wild west
+native american
+small town america
+main street
+gas station
+motel
+road trip
+highway construction
+bridge construction
+skyscraper construction
+construction workers
+assembly line
+sewing factory
+textile mill
+bakery
+butcher shop
+general store
+department store
+supermarket
+shopping mall
+suburbia
+levittown
+housewife
+tupperware
+cooking show
+family dinner
+kids playing
+playground
+schoolchildren
+classroom
+teacher
+college campus
+graduation
+wedding
+baby
+elderly
+doctor
+nurse
+hospital
+polio vaccine
+laboratory
+scientist
+chemistry
+electricity
+power plant
+hydroelectric dam
+nuclear power plant
+rocket test
+v-2 rocket
+jet engine
+wind tunnel
+weather balloon
+hurricane
+tornado
+flood
+earthquake
+fire
+firefighters
+police
+traffic
+rush hour
+commuters
+bicycle
+motorcycle
+boxing
+baseball
+football
+basketball
+olympics
+swimming
+surfing
+skiing
+ice skating
+golf
+tennis
+horse racing
+car racing
+dance hall
+swing dance
+jazz band
+big band
+rock and roll
+teenagers
+sock hop
+beatniks
+hippies
+woodstock
+beauty pageant
+fashion show
+hats
+smoking
+cigarette ads
+beer
+cocktail party
+nightclub
+bar
+cash
+bank
+bank vault
+coins
+gold bars
+stock exchange
+wall street
+accounting
+office workers
+secretary
+salesman
+advertising agency
+billboard
+neon signs
+las vegas
+casino
+amusement park
+roller coaster
+ferris wheel
+zoo
+animals
+horses
+dogs
+cats
+birds
+insects
+microscope
+cells
+human body
+brain
+space
+moon
+jupiter
+saturn
+sun
+solar flare
+galaxy
+nebula
+stars
+spacewalk
+international space station
+mission control
+lava
+glacier
+iceberg
+antarctica
+arctic
+ocean
+underwater
+coral reef
+jungle
+mountains
+river
+lake
+clouds
+storm
+lightning
+rain
+snow
+sunset
+sunrise
+time lapse
+aerial view
+city at night
+explosion
+smoke
+abandoned
+ruins
+castle
+cathedral
+pyramids
+ancient rome
+ancient greece
+medieval
+old maps
+globe
+world map
+vintage photos
+portraits
+victorian
+1900s
+1910s
+edwardian
+gilded age
+industrial revolution
+steam engine
+telegraph
+printing press
+newspaper
+newsboy
+mail
+post office
+1920s kitchen
+1920s family
+1920s school
+1920s office
+1920s factory
+1920s cars
+1920s street
+1920s new york
+1920s fashion
+1920s dance
+1920s advertising
+1920s television
+1920s grocery store
+1920s farm
+1920s train
+1920s airplane
+1920s beach
+1920s children
+1920s christmas
+1920s home movies
+1920s women working
+1920s music
+1920s city life
+1920s travel
+1920s sports
+1920s shopping
+1920s suburbs
+1920s housewife
+1920s restaurant
+1920s technology
+1930s kitchen
+1930s family
+1930s school
+1930s office
+1930s factory
+1930s cars
+1930s street
+1930s new york
+1930s fashion
+1930s dance
+1930s advertising
+1930s television
+1930s grocery store
+1930s farm
+1930s train
+1930s airplane
+1930s beach
+1930s children
+1930s christmas
+1930s home movies
+1930s women working
+1930s music
+1930s city life
+1930s travel
+1930s sports
+1930s shopping
+1930s suburbs
+1930s housewife
+1930s restaurant
+1930s technology
+1940s kitchen
+1940s family
+1940s school
+1940s office
+1940s factory
+1940s cars
+1940s street
+1940s new york
+1940s fashion
+1940s dance
+1940s advertising
+1940s television
+1940s grocery store
+1940s farm
+1940s train
+1940s airplane
+1940s beach
+1940s children
+1940s christmas
+1940s home movies
+1940s women working
+1940s music
+1940s city life
+1940s travel
+1940s sports
+1940s shopping
+1940s suburbs
+1940s housewife
+1940s restaurant
+1940s technology
+1950s kitchen
+1950s family
+1950s school
+1950s office
+1950s factory
+1950s cars
+1950s street
+1950s new york
+1950s fashion
+1950s dance
+1950s advertising
+1950s television
+1950s grocery store
+1950s farm
+1950s train
+1950s airplane
+1950s beach
+1950s children
+1950s christmas
+1950s home movies
+1950s women working
+1950s music
+1950s city life
+1950s travel
+1950s sports
+1950s shopping
+1950s suburbs
+1950s housewife
+1950s restaurant
+1950s technology
+1960s kitchen
+1960s family
+1960s school
+1960s office
+1960s factory
+1960s cars
+1960s street
+1960s new york
+1960s fashion
+1960s dance
+1960s advertising
+1960s television
+1960s grocery store
+1960s farm
+1960s train
+1960s airplane
+1960s beach
+1960s children
+1960s christmas
+1960s home movies
+1960s women working
+1960s music
+1960s city life
+1960s travel
+1960s sports
+1960s shopping
+1960s suburbs
+1960s housewife
+1960s restaurant
+1960s technology
+1970s kitchen
+1970s family
+1970s school
+1970s office
+1970s factory
+1970s cars
+1970s street
+1970s new york
+1970s fashion
+1970s dance
+1970s advertising
+1970s television
+1970s grocery store
+1970s farm
+1970s train
+1970s airplane
+1970s beach
+1970s children
+1970s christmas
+1970s home movies
+1970s women working
+1970s music
+1970s city life
+1970s travel
+1970s sports
+1970s shopping
+1970s suburbs
+1970s housewife
+1970s restaurant
+1970s technology
