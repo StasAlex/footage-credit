@@ -139,8 +139,8 @@ function card(it, i) {
     <div class="badges">${badge}</div>
     <a class="report" href="${esc(report)}" target="_blank" rel="noopener nofollow">Report</a>
     <div class="act">
-      <button class="dl" type="button">Download</button>
-      <button class="add${added ? " on" : ""}" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description.">${added ? "✓ In credit list" : "+ Credit line"}</button>
+      <button class="dl" type="button"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>Download</span></button>
+      <button class="add${added ? " on" : ""}" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description.">${added ? "✓ In credit list" : '<span class="plus">+</span><span>Credit line</span>'}</button>
     </div>
   </div>
 </article>`;
@@ -274,10 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (e.target.closest(".dl")) {
       const btn = e.target.closest(".dl");
-      btn.textContent = "…";
+      btn.classList.add("busy");
       try { window.open(await resolveFile(it), "_blank", "noopener"); }
       catch { window.open(it.page, "_blank", "noopener"); }
-      btn.textContent = "Download";
+      btn.classList.remove("busy");
       if (lic(it.license).attribution && !credits.some((c) => c.page === it.page)) {
         credits.push(it); store.set(credits); renderCredits(); render();
         toast("This clip needs the author named, so its credit line was added to your list.");

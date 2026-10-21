@@ -206,7 +206,7 @@ def card(it, i):
     <p class="lic">{esc(it['license'] or 'Check license')}</p>
     <div class="badges">{badge}</div>
     <a class="report" href="{esc(report_url(it))}" target="_blank" rel="noopener nofollow">Report</a>
-    <div class="act"><button class="dl" type="button">Download</button><button class="add" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description.">+ Credit line</button></div>
+    <div class="act"><button class="dl" type="button"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>Download</span></button><button class="add" type="button" title="Adds this clip's author, source and license to your credit list. Paste the list into your YouTube description."><span class="plus">+</span><span>Credit line</span></button></div>
   </div>
 </article>"""
 

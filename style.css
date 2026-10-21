@@ -95,7 +95,18 @@ header.top {
   & .act { display: flex; gap: 6px; }
   & .act button { flex: 1; font: inherit; font-size: 13px; font-weight: 500; padding: 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; transition: border-color .15s; }
   & .act button:hover { border-color: var(--ink); }
-  & .act .dl { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  & .act button { display: flex; align-items: center; justify-content: center; gap: 6px; position: relative; overflow: hidden; isolation: isolate; }
+  & .act .dl { background: var(--ink); color: var(--bg); border-color: var(--ink); transition: color .3s, border-color .3s; }
+  & .act .dl::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--accent); border-radius: inherit; translate: 0 101%; transition: translate .35s cubic-bezier(.2,.8,.2,1); }
+  & .act .dl:hover { color: var(--accent-ink); border-color: var(--accent); }
+  & .act .dl:hover::before { translate: 0 0; }
+  & .act .dl svg { flex: none; transition: translate .3s; }
+  & .act .dl:hover svg { animation: drop .9s cubic-bezier(.3,.7,.4,1) infinite; }
+  & .act .dl.busy svg { animation: drop .6s linear infinite; }
+  & .act .add { transition: border-color .25s, color .25s, background .25s; }
+  & .act .add .plus { display: inline-block; font-weight: 700; transition: rotate .35s cubic-bezier(.2,.8,.2,1), scale .35s; }
+  & .act .add:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--panel)); }
+  & .act .add:hover .plus { rotate: 180deg; scale: 1.35; }
   & .act .add.on { border-color: var(--accent); color: var(--accent); }
 }
 
@@ -179,4 +190,11 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 100px; color: var(--
   & .option.active { background: var(--chip); color: var(--ink); }
   & .option.selected { color: var(--accent); font-weight: 600; }
   & .ts-dropdown-content { padding: 0; }
+}
+
+@keyframes drop {
+  0% { translate: 0 -130%; opacity: 0; }
+  35% { translate: 0 0; opacity: 1; }
+  70% { translate: 0 0; opacity: 1; }
+  100% { translate: 0 130%; opacity: 0; }
 }
