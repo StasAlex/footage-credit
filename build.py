@@ -21,6 +21,7 @@ from pathlib import Path
 
 SITE_NAME = "FootageCredit"
 BASE_URL = "https://stasalex.github.io/footage-credit"   # change when a custom domain is attached
+PROXY_URL = ""                                            # deployed worker/ URL; enables Pixabay in live search
 ADSENSE_CLIENT = ""                                       # "ca-pub-XXXXXXXX" once AdSense approves the site
 
 ROOT = Path(__file__).parent
@@ -138,13 +139,14 @@ def fetch(kw):
 def lic(raw):
     s = (raw or "").lower()
     code = "unknown"
-    if re.search(r"cc0|zero", s): code = "cc0"
+    if "pixabay" in s: code = "free"
+    elif re.search(r"cc0|zero", s): code = "cc0"
     elif re.search(r"public.?domain|pdm|\bpd\b|no known copyright", s): code = "pd"
     elif "nc" in s: code = "nc"
     elif "nd" in s: code = "nd"
     elif re.search(r"by.?sa", s): code = "by-sa"
     elif re.search(r"\bby\b|cc.?by|attribution", s): code = "by"
-    return code, code in ("cc0", "pd", "by", "by-sa"), code in ("by", "by-sa", "nc", "nd")
+    return code, code in ("free", "cc0", "pd", "by", "by-sa"), code in ("by", "by-sa", "nc", "nd")
 
 
 def card(it, i):
@@ -172,6 +174,7 @@ def card(it, i):
 def page(title, desc, body, rel, path, extra_head=""):
     ads = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}" '
            'crossorigin="anonymous"></script>') if ADSENSE_CLIENT else ""
+    proxy = f'<script>window.FC_PROXY = {json.dumps(PROXY_URL)};</script>' if PROXY_URL else ""
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -205,7 +208,7 @@ def page(title, desc, body, rel, path, extra_head=""):
   </div>
   <button id="credits-toggle" type="button">Credits (<span id="credits-n">0</span>)</button>
 </aside>
-<script src="{rel}app.js"></script>
+{proxy}<script src="{rel}app.js"></script>
 </body>
 </html>
 """

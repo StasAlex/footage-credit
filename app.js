@@ -1,5 +1,5 @@
 // FootageCredit: search free footage across open archives and build a ready-to-paste credits block.
-// All sources are CORS-open and need no key, so the site runs fully static.
+// Open sources are queried directly; keyed ones (Pixabay) go through a tiny proxy set in window.FC_PROXY.
 
 const $ = (s, el = document) => el.querySelector(s);
 const enc = encodeURIComponent;
@@ -9,13 +9,14 @@ const enc = encodeURIComponent;
 function lic(raw) {
   const s = (raw || "").toLowerCase();
   let code = "unknown";
-  if (/cc0|zero/.test(s)) code = "cc0";
+  if (/pixabay/.test(s)) code = "free";
+  else if (/cc0|zero/.test(s)) code = "cc0";
   else if (/public.?domain|pdm|\bpd\b|no known copyright/.test(s)) code = "pd";
   else if (/nc/.test(s)) code = "nc";
   else if (/nd/.test(s)) code = "nd";
   else if (/by.?sa/.test(s)) code = "by-sa";
   else if (/\bby\b|cc.?by|attribution/.test(s)) code = "by";
-  const commercial = ["cc0", "pd", "by", "by-sa"].includes(code);
+  const commercial = ["free", "cc0", "pd", "by", "by-sa"].includes(code);
   const attribution = ["by", "by-sa", "nc", "nd"].includes(code);
   return { code, commercial, attribution, label: raw || "Check license" };
 }
@@ -24,6 +25,12 @@ const strip = (h) => { const d = document.createElement("div"); d.innerHTML = h 
 
 // ---------- sources ----------
 const SOURCES = {
+  async pixabay(q, kind) {
+    if (!window.FC_PROXY) return [];
+    const r = await fetch(`${window.FC_PROXY}?src=pixabay&q=${enc(q)}&kind=${kind}`);
+    if (!r.ok) throw new Error("pixabay");
+    return r.json();
+  },
   async openverse(q, kind) {
     if (kind === "video") return [];
     const d = await (await fetch(`https://api.openverse.org/v1/images/?q=${enc(q)}&page_size=30&mature=false`)).json();

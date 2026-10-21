@@ -38,8 +38,9 @@ The source adapters exist twice and must stay in sync: Python in `build.py`, JS 
 
 Deliberately NOT used:
 - **Coverr**: its API is free only for non-commercial use; an ad-funded site is commercial.
-- **Pixabay**: allowed with attribution, but needs a key, so it requires a proxy (e.g. Cloudflare Worker)
-  to hide the key, plus 24h caching and no permanent hotlinking of images. Possible later step.
+- **Pixabay** is live-search only, through the Cloudflare Worker in `worker/` (key in the Worker secret
+  `PIXABAY_KEY`, 24h cache). Enabled when `PROXY_URL` in `build.py` is set. Not baked into topic pages,
+  because Pixabay forbids permanent hotlinking of images. License badge code `free`: commercial OK, no credit.
 - **YouTube / yt-dlp downloading**: violates YouTube terms and gets the site rejected by AdSense. Never add it.
 
 ## License badges (`lic()`)
