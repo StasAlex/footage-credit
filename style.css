@@ -43,11 +43,13 @@ header.top {
 }
 
 .how {
-  list-style: none; counter-reset: how; margin: 22px auto 0; padding: 0; max-width: 900px;
-  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; text-align: left;
-  & li { counter-increment: how; display: flex; align-items: baseline; gap: 8px; max-width: 280px; font-size: 13px; color: var(--muted); }
-  & li::before { content: counter(how); flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--chip); color: var(--ink); font-size: 11px; font-weight: 700; display: grid; place-items: center; }
-  & b { color: var(--ink); font-weight: 600; }
+  list-style: none; margin: 28px 0 0; padding: 0; text-align: left;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px;
+  & li { position: relative; padding: 18px 20px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+  & li:not(:last-child)::after { content: "→"; position: absolute; right: -28px; top: 50%; translate: 0 -50%; color: var(--muted); font-size: 20px; }
+  & .n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 700; }
+  & h3 { margin: 12px 0 4px; font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+  & p { margin: 0; font-size: 13.5px; color: var(--muted); }
 }
 
 .bar {
@@ -124,4 +126,8 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 100px; color: var(--
     & button { flex: 1; height: 44px; }
   }
   header.top nav { gap: 14px; }
+}
+@media (max-width: 820px) {
+  .how { grid-template-columns: 1fr; gap: 28px;
+    & li:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -26px; translate: -50% 0; } }
 }

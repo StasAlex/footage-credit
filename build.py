@@ -270,9 +270,9 @@ SEARCH_FORM = """<form id="search" role="search">
   <button type="submit">Search</button>
 </form>
 <ol class="how">
-  <li><b>Search once.</b> We look through the Internet Archive, NASA, Wikimedia Commons and Openverse at the same time.</li>
-  <li><b>See what you're allowed to do.</b> Each clip is marked: OK for monetized videos, credit required, or check license.</li>
-  <li><b>Download and copy the credits.</b> If a clip needs the author named, its credit line is added to your list (bottom right). Copy the list into your video description.</li>
+  <li><span class="n">1</span><h3>Search</h3><p>Type a topic, like “steam train” or “1950s kitchen”, and press Search. We check the Internet Archive, NASA, Wikimedia Commons and Openverse at once.</p></li>
+  <li><span class="n">2</span><h3>Check the badge</h3><p>Green “commercial OK” means you can use it in a monetized video. “Credit required” means you must name the author. Orange means open the source page and check the license yourself.</p></li>
+  <li><span class="n">3</span><h3>Download and copy credits</h3><p>Click Download. If the clip needs a credit, it’s added to your Credit list (bottom right). Open it, click Copy and paste it into your video description.</p></li>
 </ol>"""
 
 FILTER_BAR = """<div class="bar">
