@@ -202,8 +202,31 @@ async function search(q, kind) {
   if (errs.length) $("#count").textContent += ` · unavailable: ${errs.join(", ")}`;
 }
 
+// ---------- theme toggle ----------
+function toggleTheme() {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("fc-theme", root.dataset.theme); } catch {}
+}
+
+// Dot field that follows the cursor.
+function initGlow() {
+  const g = $(".glow");
+  if (!g || !matchMedia("(hover: hover)").matches) return;
+  let x = 0, y = 0, raf = 0;
+  addEventListener("pointermove", (e) => {
+    x = e.clientX; y = e.clientY; g.classList.add("on");
+    raf ||= requestAnimationFrame(() => { g.style.setProperty("--mx", x + "px"); g.style.setProperty("--my", y + "px"); raf = 0; });
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => g.classList.remove("on"));
+}
+
 // ---------- wiring ----------
 document.addEventListener("DOMContentLoaded", () => {
+  $("#theme")?.addEventListener("click", toggleTheme);
+  initGlow();
+
   const seed = $("#seed");
   if (seed) { results = JSON.parse(seed.textContent); }
 

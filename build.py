@@ -228,15 +228,22 @@ def page(title, desc, body, rel, path, extra_head=""):
 <link rel="canonical" href="{BASE_URL}/{path}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
+<script>try{{var t=localStorage.getItem("fc-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="{rel}style.css?v={ASSET_V}">
 {ads}{extra_head}
 </head>
 <body>
+<div class="glow" aria-hidden="true"></div>
 <header class="top"><div class="wrap">
   <a class="logo" href="{rel}">Footage<b>Credit</b></a>
-  <nav><a href="{rel}free/">Browse topics</a><a href="{rel}about/">About</a></nav>
+  <nav><a href="{rel}free/">Browse topics</a><a href="{rel}about/">About</a>
+    <button id="theme" type="button" aria-label="Switch light or dark theme" title="Light / dark theme">
+      <svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </nav>
 </div></header>
 {body}
 <footer><div class="wrap">
