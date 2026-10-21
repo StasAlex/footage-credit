@@ -8,6 +8,8 @@
 <link rel="canonical" href="https://stasalex.github.io/footage-credit/">
 <meta property="og:title" content="FootageCredit: public domain archival footage with auto credits">
 <meta property="og:description" content="Search public domain archival footage, newsreels, vintage films and NASA video in one place. License badges and ready-to-paste YouTube credits.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
 
 </head>
@@ -21,8 +23,9 @@
   <h1>Public domain archival footage for your videos</h1>
   <p>Old newsreels, educational and industrial films, home movies, NASA missions and historic photos from the Internet Archive, NASA, Wikimedia Commons and Openverse, in one search. Every result shows whether you can use it in a monetized video, and the credit block for your description writes itself as you download.</p>
   <form id="search" role="search">
-  <input name="q" type="search" placeholder="Try: 1950s kitchen, newsreel, apollo 11, steam train" value="" required>
-  <select name="kind" aria-label="Media type"><option value="any">Video + photo</option><option value="video">Video</option><option value="photo">Photo</option></select>
+  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input name="q" type="search" placeholder="Search archival footage: newsreel, 1950s kitchen, apollo 11…" value="" aria-label="Search footage" required>
+  <select name="kind" aria-label="Media type"><option value="any">All media</option><option value="video">Video</option><option value="photo">Photo</option></select>
   <button type="submit">Search</button>
 </form>
 <ol class="how">

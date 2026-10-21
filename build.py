@@ -225,6 +225,8 @@ def page(title, desc, body, rel, path, extra_head=""):
 <link rel="canonical" href="{BASE_URL}/{path}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="{rel}style.css">
 {ads}{extra_head}
 </head>
@@ -259,8 +261,9 @@ Footage credits:
 
 
 SEARCH_FORM = """<form id="search" role="search">
-  <input name="q" type="search" placeholder="Try: 1950s kitchen, newsreel, apollo 11, steam train" value="{value}" required>
-  <select name="kind" aria-label="Media type"><option value="any">Video + photo</option><option value="video">Video</option><option value="photo">Photo</option></select>
+  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input name="q" type="search" placeholder="Search archival footage: newsreel, 1950s kitchen, apollo 11…" value="{value}" aria-label="Search footage" required>
+  <select name="kind" aria-label="Media type"><option value="any">All media</option><option value="video">Video</option><option value="photo">Photo</option></select>
   <button type="submit">Search</button>
 </form>
 <ol class="how">
