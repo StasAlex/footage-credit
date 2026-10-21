@@ -214,12 +214,14 @@ function toggleTheme() {
 function initGlow() {
   const g = $(".glow");
   if (!g || !matchMedia("(hover: hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty, running = false;
-  const tick = () => {
-    x += (tx - x) * 0.12; y += (ty - y) * 0.12;
+  let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty, running = false, last = 0;
+  const tick = (t) => {
+    const k = 1 - Math.exp(-(last ? Math.min(t - last, 50) : 16) / 140);   // frame-rate independent easing
+    last = t;
+    x += (tx - x) * k; y += (ty - y) * k;
     g.style.setProperty("--mx", x + "px"); g.style.setProperty("--my", y + "px");
     running = Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5;
-    if (running) requestAnimationFrame(tick);
+    if (running) requestAnimationFrame(tick); else last = 0;
   };
   addEventListener("pointermove", (e) => {
     tx = e.clientX; ty = e.clientY; g.classList.add("on");
