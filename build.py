@@ -235,7 +235,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 {ads}{extra_head}
 </head>
 <body>
-<div class="glow" aria-hidden="true"></div>
+<div class="glow" aria-hidden="true"><div class="icons"></div></div>
 <header class="top"><div class="wrap">
   <a class="logo" href="{rel}">Footage<b>Credit</b></a>
   <nav><a href="{rel}free/">Browse topics</a><a href="{rel}about/">About</a>

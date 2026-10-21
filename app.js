@@ -210,14 +210,26 @@ function toggleTheme() {
   try { localStorage.setItem("fc-theme", root.dataset.theme); } catch {}
 }
 
-// Dot field that follows the cursor.
+// Film/camera icon field that eases after the cursor, plus a spotlight on the hovered card.
 function initGlow() {
   const g = $(".glow");
-  if (!g || !matchMedia("(hover: hover)").matches) return;
-  let x = 0, y = 0, raf = 0;
+  if (!g || !matchMedia("(hover: hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty, running = false;
+  const tick = () => {
+    x += (tx - x) * 0.12; y += (ty - y) * 0.12;
+    g.style.setProperty("--mx", x + "px"); g.style.setProperty("--my", y + "px");
+    running = Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5;
+    if (running) requestAnimationFrame(tick);
+  };
   addEventListener("pointermove", (e) => {
-    x = e.clientX; y = e.clientY; g.classList.add("on");
-    raf ||= requestAnimationFrame(() => { g.style.setProperty("--mx", x + "px"); g.style.setProperty("--my", y + "px"); raf = 0; });
+    tx = e.clientX; ty = e.clientY; g.classList.add("on");
+    if (!running) { running = true; requestAnimationFrame(tick); }
+    const card = e.target.closest?.(".card");
+    if (card) {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--cx", e.clientX - r.left + "px");
+      card.style.setProperty("--cy", e.clientY - r.top + "px");
+    }
   }, { passive: true });
   document.addEventListener("pointerleave", () => g.classList.remove("on"));
 }
