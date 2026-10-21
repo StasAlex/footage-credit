@@ -80,7 +80,7 @@ header.top {
   position: relative;
   &:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
   &::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease;
-    background: radial-gradient(130px circle at var(--cx, 50%) var(--cy, 50%), color-mix(in srgb, var(--accent) 30%, transparent), transparent 75%); }
+    background: radial-gradient(140px circle at var(--cx, 50%) var(--cy, 50%), color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--accent) 18%, transparent) 45%, transparent 80%); }
   &:hover::after { opacity: 1; }
   & .thumb { position: relative; display: block; min-height: 120px; background: var(--chip); overflow: hidden; }
   & .thumb img { width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; transition: transform .3s; }
