@@ -51,6 +51,8 @@ header.top {
   & input { flex: 1; min-width: 0; height: 48px; border: 0; outline: 0; background: none; color: var(--ink); font: inherit; font-size: 17px; padding: 0 6px; }
   & input::placeholder { color: var(--muted); }
   & select { flex: none; height: 40px; border: 0; border-left: 1px solid var(--line); background: none; color: var(--muted); font: inherit; font-size: 14px; padding: 0 10px; cursor: pointer; outline: 0; }
+  & .ts-wrapper { flex: none; width: 128px; border-left: 1px solid var(--line); }
+  & .ts-wrapper .ts-control { border: 0; background: none; box-shadow: none; }
   & button { flex: none; height: 48px; padding: 0 26px; border: 0; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 600; font-size: 16px; cursor: pointer; transition: filter .15s; }
   & button:hover { filter: brightness(1.08); }
 }
@@ -68,6 +70,8 @@ header.top {
 .bar {
   display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 0 14px; color: var(--muted); font-size: 14px; flex-wrap: wrap;
   & select { font: inherit; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); margin-left: 6px; }
+  & label { display: flex; align-items: center; gap: 8px; }
+  & .ts-wrapper { width: 220px; }
 }
 
 #grid { columns: 250px; column-gap: 18px; padding-bottom: 48px; }
@@ -79,9 +83,6 @@ header.top {
   transition: transform .18s, box-shadow .18s;
   position: relative;
   &:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-  &::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease;
-    background: radial-gradient(140px circle at var(--cx, 50%) var(--cy, 50%), color-mix(in srgb, var(--accent) 55%, transparent), color-mix(in srgb, var(--accent) 18%, transparent) 45%, transparent 80%); }
-  &:hover::after { opacity: 1; }
   & .thumb { position: relative; display: block; min-height: 120px; background: var(--chip); overflow: hidden; }
   & .thumb img { width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; transition: transform .3s; }
   &:hover .thumb img { transform: scale(1.03); }
@@ -162,3 +163,20 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 100px; color: var(--
   &::after { content: ""; position: absolute; inset: 0; background: radial-gradient(110px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 14%, transparent), transparent 75%); }
 }
 @media (hover: none), (prefers-reduced-motion: reduce) { .glow { display: none; } }
+
+.ts-wrapper.single {
+  font: inherit; font-size: 14px;
+  & .ts-control { display: flex; align-items: center; min-height: 38px; padding: 0 34px 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--ink); box-shadow: none; cursor: pointer; font: inherit; line-height: 1.2; transition: border-color .15s; }
+  & .ts-control::after { content: ""; position: absolute; right: 14px; top: 50%; width: 7px; height: 7px; margin-top: -5px; border: solid var(--muted); border-width: 0 1.6px 1.6px 0; rotate: 45deg; transition: rotate .2s, margin .2s; }
+  &.dropdown-active .ts-control::after { rotate: 225deg; margin-top: -1px; }
+  &:hover .ts-control, &.focus .ts-control { border-color: var(--ink); box-shadow: none; }
+  & .ts-control .item { color: var(--ink); }
+  &.input-active .ts-control, &.dropdown-active .ts-control { background: var(--panel); }
+}
+.ts-dropdown {
+  margin-top: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); box-shadow: var(--shadow); font: inherit; font-size: 14px; z-index: 40;
+  & .option { padding: 8px 12px; border-radius: 9px; cursor: pointer; }
+  & .option.active { background: var(--chip); color: var(--ink); }
+  & .option.selected { color: var(--accent); font-weight: 600; }
+  & .ts-dropdown-content { padding: 0; }
+}

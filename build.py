@@ -231,6 +231,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 <script>try{{var t=localStorage.getItem("fc-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.min.css">
 <link rel="stylesheet" href="{rel}style.css?v={ASSET_V}">
 {ads}{extra_head}
 </head>
@@ -264,7 +265,8 @@ Footage credits:
   <p id="toast" role="status" hidden></p>
   <button id="credits-toggle" type="button">Credit list (<span id="credits-n">0</span>)</button>
 </aside>
-{proxy}<script src="{rel}app.js?v={ASSET_V}"></script>
+{proxy}<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+<script src="{rel}app.js?v={ASSET_V}"></script>
 </body>
 </html>
 """

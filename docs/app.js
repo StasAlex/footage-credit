@@ -300,4 +300,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCredits();
   if (results.length) render();
+
+  // Styled dropdowns; the native selects stay in sync, so existing change handlers keep working.
+  if (window.TomSelect) {
+    document.querySelectorAll("#search select, #lic").forEach((el) =>
+      new TomSelect(el, { controlInput: null, allowEmptyOption: true, maxOptions: null }));
+  }
 });
