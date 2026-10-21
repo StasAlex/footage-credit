@@ -80,12 +80,14 @@ header.top {
 .card {
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column;
   break-inside: avoid; margin-bottom: 18px;
-  transition: transform .18s, box-shadow .18s;
-  position: relative;
-  &:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  position: relative; transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;
+  &:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px); transition-duration: .15s, .3s, .3s;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); box-shadow: 0 14px 34px -10px color-mix(in srgb, var(--accent) 35%, rgba(0,0,0,.25)); }
+  & .thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.35), transparent 45%); opacity: 0; transition: opacity .3s; }
+  &:hover .thumb::after { opacity: 1; }
   & .thumb { position: relative; display: block; min-height: 120px; background: var(--chip); overflow: hidden; }
-  & .thumb img { width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; transition: transform .3s; }
-  &:hover .thumb img { transform: scale(1.03); }
+  & .thumb img { width: 100%; height: auto; max-height: 520px; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  &:hover .thumb img { transform: scale(1.06); }
   & .kind { position: absolute; left: 10px; top: 10px; background: rgba(0, 0, 0, .6); backdrop-filter: blur(6px); color: #fff; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
   & .meta { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
   & h3 { margin: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

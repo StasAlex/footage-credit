@@ -210,7 +210,7 @@ function toggleTheme() {
   try { localStorage.setItem("fc-theme", root.dataset.theme); } catch {}
 }
 
-// Film/camera icon field that eases after the cursor, plus a spotlight on the hovered card.
+// Film/camera icon field that eases after the cursor, plus a tilt on the hovered card.
 function initGlow() {
   const g = $(".glow");
   if (!g || !matchMedia("(hover: hover)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -227,13 +227,17 @@ function initGlow() {
     tx = e.clientX; ty = e.clientY; g.classList.add("on");
     if (!running) { running = true; requestAnimationFrame(tick); }
     const card = e.target.closest?.(".card");
-    if (card) {
+    if (card) {                                // gentle 3D tilt towards the cursor
       const r = card.getBoundingClientRect();
-      card.style.setProperty("--cx", e.clientX - r.left + "px");
-      card.style.setProperty("--cy", e.clientY - r.top + "px");
+      card.style.setProperty("--ry", ((e.clientX - r.left) / r.width - 0.5) * 6 + "deg");
+      card.style.setProperty("--rx", (0.5 - (e.clientY - r.top) / r.height) * 6 + "deg");
     }
   }, { passive: true });
   document.addEventListener("pointerleave", () => g.classList.remove("on"));
+  document.addEventListener("pointerout", (e) => {
+    const card = e.target.closest?.(".card");
+    if (card && !card.contains(e.relatedTarget)) { card.style.removeProperty("--rx"); card.style.removeProperty("--ry"); }
+  });
 }
 
 // ---------- wiring ----------
