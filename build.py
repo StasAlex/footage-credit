@@ -232,6 +232,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Public+Sans:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.min.css">
+<link rel="icon" href="{rel}favicon.ico" sizes="any"><link rel="icon" href="{rel}favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="{rel}apple-touch-icon.png">
 <link rel="stylesheet" href="{rel}style.css?v={ASSET_V}">
 {ads}{extra_head}
 </head>
@@ -322,7 +323,7 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir()
-    for f in ("app.js", "style.css"):
+    for f in ("app.js", "style.css", "favicon.svg", "favicon.ico", "apple-touch-icon.png"):
         shutil.copy(ROOT / f, OUT / f)
 
     with ThreadPoolExecutor(3) as ex:
