@@ -230,7 +230,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 <meta property="og:description" content="{esc(desc)}">
 <script>try{{var t=localStorage.getItem("fc-theme");if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Public+Sans:wght@400;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.min.css">
 <link rel="stylesheet" href="{rel}style.css?v={ASSET_V}">
 {ads}{extra_head}
@@ -238,7 +238,7 @@ def page(title, desc, body, rel, path, extra_head=""):
 <body>
 <div class="glow" aria-hidden="true"><div class="icons"></div></div>
 <header class="top"><div class="wrap">
-  <a class="logo" href="{rel}">Footage<b>Credit</b></a>
+  <a class="logo" href="{rel}">Footage <b>Credit</b></a>
   <nav><a href="{rel}free/">Browse topics</a><a href="{rel}about/">About</a>
     <button id="theme" type="button" aria-label="Switch light or dark theme" title="Light / dark theme">
       <svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -271,6 +271,23 @@ Footage credits:
 </html>
 """
 
+
+ROLL = """<figure class="roll" aria-label="Example of a credit list written by FootageCredit">
+  <div class="reel" aria-hidden="true">
+    <h2>Footage credits</h2>
+    <dl>
+      <dt>Apollo 11 launch, 1969</dt><dd>NASA, public domain</dd>
+      <dt>Assembly line, 1950s</dt><dd>Internet Archive (Prelinger), public domain</dd>
+      <dt>Steam locomotive at dusk</dt><dd>Wikimedia Commons, CC BY 4.0</dd>
+      <dt>Times Square crowd</dt><dd>Internet Archive, public domain</dd>
+      <dt>Earth from orbit</dt><dd>NASA, public domain</dd>
+      <dt>Harbor fog, 1938</dt><dd>Openverse, CC BY-SA 2.0</dd>
+      <dt>Family picnic home movie</dt><dd>Internet Archive, public domain</dd>
+      <dt>Farm tractor at work</dt><dd>Wikimedia Commons, CC0</dd>
+    </dl>
+    <p class="end">Written for you as you download</p>
+  </div>
+</figure>"""
 
 SEARCH_FORM = """<form id="search" role="search">
   <svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -347,7 +364,8 @@ def main():
     # home
     popular = "".join(f'<a href="free/{slug(k)}/">{esc(k)}</a>' for k in keywords[:24])
     home = f"""<main class="wrap">
-<section class="hero">
+<section class="hero home">
+  {ROLL}
   <h1>Public domain archival footage for your videos</h1>
   <p>Old newsreels, educational and industrial films, home movies, NASA missions and historic photos from the Internet Archive, NASA, Wikimedia Commons and Openverse, in one search. Every result shows whether you can use it in a monetized video, and the credit block for your description writes itself as you download.</p>
   {SEARCH_FORM.format(value="")}
