@@ -17,6 +17,8 @@ function lic(raw) {
   else if (/nd/.test(s)) code = "nd";
   else if (/by.?sa/.test(s)) code = "by-sa";
   else if (/\bby\b|cc.?by|attribution/.test(s)) code = "by";
+  else if (/no restrictions|copyrighted free use|kogl type 0/.test(s)) code = "free";
+  else if (/gfdl|\bfal\b|free art|\bogl|\bgpl|\bbsd/.test(s)) code = "by";
   const commercial = ["free", "cc0", "pd", "by", "by-sa"].includes(code);
   const attribution = ["by", "by-sa", "nc", "nd"].includes(code);
   return { code, commercial, attribution, label: raw || "Check license" };
@@ -146,6 +148,12 @@ function card(it, i) {
 </article>`;
 }
 
+// Hides items the user can't put in a video: non-commercial, no-derivatives or unrecognised license.
+function usable(it) {
+  const code = lic(it.license).code;
+  return !["nc", "nd"].includes(code) && (code !== "unknown" || /unverified/i.test(it.license || ""));
+}
+
 function filtered() {
   const f = $("#lic")?.value || "any";
   return results.filter((it) => {
@@ -197,7 +205,7 @@ async function search(q, kind) {
   results = [];
   for (let i = 0; parts.some((p) => p[i]); i++) parts.forEach((p) => p[i] && results.push(p[i]));
   const blocked = new Set(window.FC_BLOCK || []);
-  results = results.filter((it) => it.thumb && !blocked.has(it.page));
+  results = results.filter((it) => it.thumb && !blocked.has(it.page) && usable(it));
   render();
   if (errs.length) $("#count").textContent += ` · unavailable: ${errs.join(", ")}`;
 }

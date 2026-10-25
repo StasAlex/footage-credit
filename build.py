@@ -166,7 +166,7 @@ def fetch(kw):
             parts.append([])
     res = []                                   # interleave sources
     for i in range(max(map(len, parts), default=0)):
-        res += [p[i] for p in parts if i < len(p) and p[i].get("thumb")]
+        res += [p[i] for p in parts if i < len(p) and p[i].get("thumb") and usable(p[i])]
     res = res[:24]
     if not failed:                             # don't cache incomplete results, retry them next build
         CACHE.mkdir(exist_ok=True)
@@ -187,7 +187,16 @@ def lic(raw):
     elif "nd" in s: code = "nd"
     elif re.search(r"by.?sa", s): code = "by-sa"
     elif re.search(r"\bby\b|cc.?by|attribution", s): code = "by"
+    elif re.search(r"no restrictions|copyrighted free use|kogl type 0", s): code = "free"
+    elif re.search(r"gfdl|\bfal\b|free art|\bogl|\bgpl|\bbsd", s): code = "by"
     return code, code in ("free", "cc0", "pd", "by", "by-sa"), code in ("by", "by-sa", "nc", "nd")
+
+
+def usable(it):
+    """Items the user can't put in a video (non-commercial, no-derivatives, unrecognised license) are never shown.
+    Internet Archive "unverified public domain" stays visible with a check-license badge."""
+    code = lic(it["license"])[0]
+    return code not in ("nc", "nd") and (code != "unknown" or "unverified" in (it["license"] or "").lower())
 
 
 def card(it, i):
@@ -330,7 +339,8 @@ def main():
         data = dict(zip(keywords, ex.map(fetch, keywords)))
 
     # Thin pages hurt the whole site in search, so topics with few results are skipped.
-    keywords = [k for k in keywords if len([it for it in data[k] if it["page"] not in BLOCKED]) >= MIN_RESULTS]
+    data = {k: [it for it in v if it["page"] not in BLOCKED and usable(it)] for k, v in data.items()}
+    keywords = [k for k in keywords if len(data[k]) >= MIN_RESULTS]
 
     # topic pages
     for kw in keywords:
