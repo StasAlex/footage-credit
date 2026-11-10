@@ -334,6 +334,8 @@ def main():
     OUT.mkdir()
     for f in ("app.js", "style.css", "favicon.svg", "favicon.ico", "apple-touch-icon.png"):
         shutil.copy(ROOT / f, OUT / f)
+    if (ROOT / "credits").is_dir():                      # per-episode credit pages, copied verbatim
+        shutil.copytree(ROOT / "credits", OUT / "credits")
 
     with ThreadPoolExecutor(3) as ex:
         data = dict(zip(keywords, ex.map(fetch, keywords)))
